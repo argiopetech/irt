@@ -3,6 +3,7 @@ module BRM where
 
 import Numeric.AD
 import Numeric.AD.Halley
+import Numeric.AD.Internal.Identity
 
 newtype IRTParameters = IRTParameters (Double, Double, Double)
 
@@ -89,28 +90,32 @@ l'' u x theta =
 
 -- |Calculates the log likelihood (of?)
 -- Only implements MLE, so bmePrior is 1
---logLike :: Response -> IRTParameters -> Double -> Double
---logLike :: (Mode a, Floating a, Scalar a ~ Double) => Response -> IRTParameters -> a -> a
-logLike :: (Mode a, Floating a, Scalar a ~ Double) => Double -> IRTParameters -> a -> a
-logLike su x theta =
-    let u        = auto su
-        pActual  = p x theta
-        qActual  = q x theta
-        logLik   = (u * log pActual) + ((1 - u) * log qActual)
+logLike :: (Mode a, Floating a, Scalar a ~ Double) => [Response] -> [IRTParameters] -> a -> a
+logLike sus xs theta =
+    let us       = map auto sus
+        pActuals = map (\x -> p x theta) xs
+        qActuals = map (\x -> q x theta) xs
+        logLik   = map (\(u, pActual, qActual) -> (u * log pActual) + ((1 - u) * log qActual)) $ zip3 us pActuals qActuals
         bmePrior = 1
-    in logLik + log bmePrior
+    in sum logLik + log bmePrior
 
 type Range = (Double, Double)
 data MleEst = MleEst Double Double Double
 
+plotData = do
+    let points = zip [-6, -5.99 .. 6] $ map (runId . logLike [0.0, 1.0, 0.0, 1.0] [IRTParameters (1, -0.0664, 0), IRTParameters (1, -2.4939, 0), IRTParameters (1, -1.2971, 0), IRTParameters (1, -2.1392, 0)]) [-6, -5.99 .. 6]
+        string = unlines $ map (\(x, y) -> show x ++ ' ':show y) points
+    writeFile "plotPoints.out" string
+
+{-
 -- |Estimate the maximum likelihood estimate of θ using the Binary Response Model
-mleEst :: Response -> IRTParameters -> MleEst
+mleEst :: [Response] -> [IRTParameters] -> MleEst
 mleEst resp params =
     let est    = last $ findZero (logLike resp params) 0
         fisher = fisherInfo params est resp
     in case fisher of
          (FisherInfo test sem) -> MleEst est test sem
-
+-}
 {-
   # Then, maximize the loglikelihood function over that interval for each person:
   for( i in 1:dim(resp)[1] ){
