@@ -1,4 +1,7 @@
-module Math.IRT.Internal.IRT where
+module Math.IRT.Internal.IRT
+    ( IrtParameters(..)
+    , Response
+    ) where
 
 type Response = Double
-newtype IRTParameters = IRTParameters (Double, Double, Double)
+newtype IrtParameters = IrtParameters (Double, Double, Double)

@@ -1,6 +1,8 @@
-module Math.IRT.Internal.MLE where
+module Math.IRT.Internal.MLE 
+    ( MleEst(..)
+    , mleEst
+    ) where
 
-import Numeric.AD
 import Numeric.AD.Halley
 
 import Math.IRT.Internal.BRM
@@ -9,15 +11,14 @@ import Math.IRT.Internal.FI
 
 data MleEst = MleEst { theta :: !Double
                      , info  :: !Double
-                     , sem   :: !Double -- ^For the moment, this avoids a name clash
-                                        -- Eventually, it can be handled with a new module
+                     , sem   :: !Double
                      } deriving (Show)
 
 -- |Estimate the maximum likelihood estimate of θ using the Binary Response Model
-mleEst :: [Response] -> [IRTParameters] -> MleEst
+mleEst :: [Response] -> [IrtParameters] -> MleEst
 mleEst resp params =
     let est    = last $ extremum (logLike resp params) 0
-        fisher = fisherInfo_observed est resp params
+        fisher = fisherInfoObserved est resp params
     in case fisher of
          (FisherInfo _ test sem) -> MleEst est test sem
 
@@ -30,7 +31,7 @@ plotData = do
     writeFile "plotPoints.out" string
 -}
 
-testIRTParams = map IRTParameters
+testIrtParams = map IrtParameters
                 [ (1, -0.0664, 0)
                 , (1, -2.4939, 0)
                 , (1, -1.2971, 0)
@@ -38,7 +39,7 @@ testIRTParams = map IRTParameters
 
 testResponses = [0.0, 1.0, 0.0, 1.0]
 
-testPoints = map IRTParameters
+testPoints = map IrtParameters
              [ (1, -1.7207, 0)
              , (1, -2.0625, 0)
              , (1, -1.7512, 0)
