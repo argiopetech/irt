@@ -1,11 +1,11 @@
-module MLE where
+module Math.IRT.Internal.MLE where
 
 import Numeric.AD
 import Numeric.AD.Halley
 
-import BRM
-import IRT
-import FI
+import Math.IRT.Internal.BRM
+import Math.IRT.Internal.IRT
+import Math.IRT.Internal.FI
 
 data MleEst = MleEst { theta :: !Double
                      , info  :: !Double

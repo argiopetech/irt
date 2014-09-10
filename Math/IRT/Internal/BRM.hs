@@ -1,11 +1,11 @@
 {-# LANGUAGE GADTs #-}
-module BRM where
+module Math.IRT.Internal.BRM where
 
 import Numeric.AD
 import Numeric.AD.Halley
 import Numeric.AD.Internal.Identity
 
-import IRT
+import Math.IRT.Internal.IRT
 
 -- |I'm not sure what this function is. It is defined here (as in the catIrt library) without a description.
 q :: (Mode s, Floating s, Scalar s ~ Double) => IRTParameters -> s -> s

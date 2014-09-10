@@ -1,7 +1,7 @@
-module FI where
+module Math.IRT.Internal.FI where
 
-import IRT
-import BRM
+import Math.IRT.Internal.IRT
+import Math.IRT.Internal.BRM
 
 data FisherInfo = FisherInfo { items :: [Double]
                              , test  :: !Double
