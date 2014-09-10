@@ -50,15 +50,26 @@ p'' (IRTParameters (a, b, c)) theta =
 
 
 type Response = Double
-data FisherInfo = FisherInfo Double Double
+data FisherInfo = FisherInfo Double Double deriving (Show)
 
 -- |The observed Fisher Information
--- catIrt also supports calculating the expected Fisher Information, the that isn't of use at the moment
-fisherInfo :: IRTParameters -> Double -> Response -> FisherInfo
-fisherInfo params theta resp =
+fisherInfo_observed :: IRTParameters -> Double -> Response -> FisherInfo
+fisherInfo_observed params theta resp =
     let info  = negate $ l'' resp params theta
         sem   = sqrt (1 / info)
     in FisherInfo info sem
+
+
+-- |The expected Fisher Information
+fisherInfo_expected :: IRTParameters -> Double -> FisherInfo
+fisherInfo_expected params theta =
+    let pActual = p  params theta
+        qActual = q  params theta
+        pDer1   = p' params theta
+        info    = (pDer1 ^ 2) / (pActual * qActual)
+        sem     = sqrt (1 / info)
+    in FisherInfo info sem
+
 
 -- |The first derivative of `l`, whatever `l` is... Once again, the catIrt documentation disappoints.
 -- According to catIrt, "u is the response, and x are the parameters."
@@ -107,12 +118,18 @@ plotData = do
         string = unlines $ map (\(x, y) -> show x ++ ' ':show y) points
     writeFile "plotPoints.out" string
 
+testPoints = map IRTParameters
+             [ (1, -1.7207, 0)
+             , (1, -2.0625, 0)
+             , (1, -1.7512, 0)
+             , (1, -2.0594, 0)]
+
 {-
 -- |Estimate the maximum likelihood estimate of θ using the Binary Response Model
 mleEst :: [Response] -> [IRTParameters] -> MleEst
 mleEst resp params =
     let est    = last $ findZero (logLike resp params) 0
-        fisher = fisherInfo params est resp
+        fisher = fisherInfo_observed params est resp
     in case fisher of
          (FisherInfo test sem) -> MleEst est test sem
 -}
