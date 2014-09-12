@@ -4,4 +4,7 @@ module Math.IRT.Internal.IRT
     ) where
 
 type Response = Double
-newtype IrtParameters = IrtParameters (Double, Double, Double)
+data IrtParameters = IrtParameters { discrimination :: Double
+                                   , difficulty     :: Double
+                                   , pseudoGuessing :: Double
+                                   } deriving (Show)

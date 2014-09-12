@@ -57,7 +57,8 @@ l'' u x theta =
 
 
 pqDers :: IrtParameters -> Double -> (Double, Double, Double, Double)
-pqDers x theta = ( p x theta
-                 , q x theta
-                 , p'  x theta
-                 , p'' x theta)
+pqDers x theta = let pComp = p x theta
+                 in ( pComp
+                    , (1 - pComp)
+                    , p'  x theta
+                    , p'' x theta)
