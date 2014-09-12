@@ -1,4 +1,4 @@
--- {-# LANGUAGE GADTs #-}
+{-# LANGUAGE GADTs #-}
 module Math.IRT.Internal.BRM 
     ( logLike
       -- *p_i(θ) and its derivatives
@@ -26,7 +26,7 @@ makeParamAutos (IrtParameters sa sb sc) =
 -- It would be entirely valid (albeit potentially inefficient) to implement this as
 --
 -- > q params theta = 1 - p params theta
---q :: (Mode s, Floating s, Scalar s ~ Double) => IrtParameters -> s -> s
+q :: (Mode s, Floating s, Scalar s ~ Double) => IrtParameters -> s -> s
 q params theta =
     let (a, b, c) = makeParamAutos params in
     (1 - c) * exp ((-a) * (theta - b))
@@ -35,9 +35,9 @@ q params theta =
 
 
 -- |This is p_i(Θ) as described by <https://en.wikipedia.org/wiki/Item_response_theory#Three_parameter_logistic_model the Wikipedia article on IRT>.
---p :: (Mode a, Floating a, Scalar a ~ Double) => IrtParameters
---  -> a -- ^Theta
---  -> a
+p :: (Mode a, Floating a, Scalar a ~ Double) => IrtParameters
+  -> a -- ^Theta
+  -> a
 p params theta =
     let (a, b, c) = makeParamAutos params in
     c + (              (1 - c)
@@ -70,7 +70,7 @@ p'' (IrtParameters a b c) theta =
 -- |Calculates the log likelihood (of what?)
 --
 -- Only implements MLE, so bmePrior is 1
---logLike :: (Mode a, Floating a, Scalar a ~ Double) => [Response] -> [IrtParameters] -> a -> a
+logLike :: (Mode a, Floating a, Scalar a ~ Double) => [Response] -> [IrtParameters] -> a -> a
 logLike sus xs theta =
     let -- us       = map auto sus
         pActuals = map (`p` theta) xs

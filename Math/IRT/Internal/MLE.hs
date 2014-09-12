@@ -10,8 +10,6 @@ import Math.IRT.Internal.BRM
 import Math.IRT.Internal.IRT
 import Math.IRT.Internal.FI
 
-import Debug.Trace
-
 data MleEst = MleEst { theta :: !Double
                      , info  :: !Double
                      , sem   :: !Double
@@ -20,7 +18,7 @@ data MleEst = MleEst { theta :: !Double
 -- |Estimate the maximum likelihood estimate of θ using the Binary Response Model
 mleEst :: [Response] -> [IrtParameters] -> MleEst
 mleEst resp params =
-    let est    = last $ (\x -> traceShow (length x) x) $ take 15 $ extremum (logLike resp params) 0
+    let est    = last $ take 15 $ extremum (logLike resp params) 0
         fisher = fisherInfoObserved est resp params
     in case fisher of
          (FisherInfo _ test sem) -> MleEst est test sem
