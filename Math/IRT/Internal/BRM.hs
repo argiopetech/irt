@@ -71,10 +71,9 @@ p'' (IrtParameters a b c) theta =
 --
 -- Only implements MLE, so bmePrior is 1
 logLike :: (Mode a, Floating a, Scalar a ~ Double) => [Response] -> [IrtParameters] -> a -> a
-logLike sus xs theta =
-    let -- us       = map auto sus
-        pActuals = map (`p` theta) xs
---        logLik   = zipWith3 (\(u, pActual, qActual) -> (auto u * log pActual) + ((1 - auto u) * log qActual)) sus pActuals qActuals
-        logLik = map (\(u, pActual) -> (u * log pActual) + ((1 - u) * log (1 - pActual))) $ zip (map auto sus) pActuals
+logLike responses params theta =
+    let ps       = map (`p` theta) params
+        logLik   = zipWith go responses ps
         bmePrior = 1
     in sum logLik + log bmePrior
+    where go u pActual = (auto u * log pActual) + ((1 - auto u) * log (1 - pActual))

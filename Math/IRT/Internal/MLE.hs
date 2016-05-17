@@ -1,10 +1,10 @@
 module Math.IRT.Internal.MLE 
     ( MleEst(..)
     , mleEst
+    , mleEst'
     ) where
 
 import Numeric.AD.Halley
-import Numeric.AD.Internal.Identity
 
 import Math.IRT.Internal.BRM
 import Math.IRT.Internal.IRT
@@ -15,38 +15,21 @@ data MleEst = MleEst { theta :: !Double
                      , sem   :: !Double
                      } deriving (Show)
 
+-- |Runs mleEst' with depth = 10 and theta = 0.
+--
+-- This is usually sufficient for starting a chain, but may search to an unnecessary depth on non-trivially convergent likelihoods once a reasonable approximation to theta has been established.
+mleEst :: [Bool] -> [IrtParameters] -> MleEst
+mleEst resp params = mleEst' resp params 10 0
+
 -- |Estimate the maximum likelihood estimate of θ using the Binary Response Model
-mleEst :: [Response] -> [IrtParameters] -> MleEst
-mleEst resp params =
-    let est    = last $ take 15 $ extremum (logLike resp params) 0
+mleEst' :: [Bool] -> [IrtParameters] -> Int -> Double -> MleEst
+mleEst' rs params n θ =
+    let resp   = map boolToDouble rs
+        est    = minMaxPrior $ last $ take n $ extremum (logLike resp params) θ
         fisher = fisherInfoObserved est resp params
     in case fisher of
          (FisherInfo _ test sem) -> MleEst est test sem
-
--- Tests
-
-plotData :: IO ()
-plotData = do
-    let range = [-6, -5.99 .. 6]
-        points = zip (map runId range) $ map (runId . logLike testResponses testIrtParams) range
-        string = unlines $ map (\(x, y) -> show x ++ ' ':show y) points
-    writeFile "plotPoints.out" string
-
-testResponses = [0.0,1.0,0.0,1.0]
-testIrtParams = [IrtParameters {discrimination = 1.0, difficulty = 0.7387, pseudoGuessing = 0.0},IrtParameters {discrimination = 1.0, difficulty = -6.64e-2, pseudoGuessing = 0.0},IrtParameters {discrimination = 1.0, difficulty = 0.0, pseudoGuessing = 0.0},IrtParameters {discrimination = 1.0, difficulty = 0.0, pseudoGuessing = 0.0}]
-
-{-
-testIrtParams = map IrtParameters
-                [ (1, -0.0664, 0)
-                , (1, -2.4939, 0)
-                , (1, -1.2971, 0)
-                , (1, -2.1392, 0)]
-
-testResponses = [0.0, 1.0, 0.0, 1.0]
-
-testPoints = map IrtParameters
-             [ (1, -1.7207, 0)
-             , (1, -2.0625, 0)
-             , (1, -1.7512, 0)
-             , (1, -2.0594, 0)]
--}
+    where boolToDouble True  = 1.0
+          boolToDouble False = 0.0
+          minMaxPrior = let bound = 12
+                        in min bound . max (negate bound)

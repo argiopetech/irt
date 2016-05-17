@@ -13,6 +13,7 @@ data FisherInfo = FisherInfo { items :: [Double]
                              } deriving (Show)
 
 -- |The observed Fisher Information
+--  Applies a min/max prior to ensure a real-valued SEM
 fisherInfoObserved :: Double -> [Response] -> [IrtParameters] -> FisherInfo
 fisherInfoObserved theta resps params =
     let items = zipWith go resps params
