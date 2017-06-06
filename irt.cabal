@@ -11,7 +11,7 @@ name:                irt
 -- PVP summary:      +-+------- breaking API changes
 --                   | | +----- non-breaking API additions
 --                   | | | +--- code changes with no API change
-version:             0.1.0.0
+version:             0.2.0.0
 
 -- A short (one-line) description of the package.
 synopsis:            A Haskell library providing Item Response Theory functions for use in computerized adaptive testing
@@ -52,20 +52,34 @@ cabal-version:       >=1.10
 
 library
   -- Modules exported by the library.
-  exposed-modules:     Math.IRT.Internal.BRM
-                     , Math.IRT.Internal.FI
-                     , Math.IRT.Internal.IRT
-                     , Math.IRT.Internal.MLE
-  
+  exposed-modules:     Math.IRT.Model.TwoPLM
+                     , Math.IRT.Model.ThreePLM
+                     , Math.IRT.Model.FourPLM
+                     , Math.IRT.Model.Rasch
+                     , Math.IRT.Model.Rasch.Logistic
+                     , Math.IRT.Model.Generic
+                     , Math.IRT.MLE
+                     , Math.IRT.MLE.Fenced
+                     , Math.IRT.MLE.Internal
+                     , Math.IRT.MLE.Truncated
+                     , Math.IRT.Fisher
+                     , Math.IRT.Internal.Distribution
+                     , Math.IRT.Internal.LogLikelihood
+
   -- Modules included in this library but not exported.
   -- other-modules:       
   
   -- LANGUAGE extensions used by modules in this package.
-  -- other-extensions:    
-  
+  default-extensions:    TemplateHaskell
+  other-extensions:      GADTs
+
   -- Other library packages from which modules are imported.
-  build-depends:       base       >= 4.7  && < 5.0,
-                       ad         >= 4.2  && < 4.4
+  build-depends:       base               >= 4.7,
+                       ad                 >= 4.2,
+                       data-default-class >= 0.1,
+                       lens               >= 4.13,
+                       statistics         >= 0.13
+
   -- Directories containing source files.
   -- hs-source-dirs:      
   
