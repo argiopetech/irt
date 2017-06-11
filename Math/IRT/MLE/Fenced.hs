@@ -1,4 +1,7 @@
-module Math.IRT.MLE.Fenced where
+module Math.IRT.MLE.Fenced ( mleEst
+                           , DF (..)
+                           , MLEResult (..)
+                           ) where
 
 import Data.Default.Class
 

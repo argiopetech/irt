@@ -1,5 +1,8 @@
 {-# LANGUAGE GADTs #-}
-module Math.IRT.MLE.Internal where
+module Math.IRT.MLE.Internal ( MLEResult (..)
+                             , generic_mleEst
+                             , logLike
+                             ) where
 
 import Numeric.AD (Mode, Scalar)
 import Numeric.AD.Halley

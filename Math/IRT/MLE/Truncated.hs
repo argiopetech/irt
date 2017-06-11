@@ -1,4 +1,7 @@
-module Math.IRT.MLE.Truncated where
+module Math.IRT.MLE.Truncated ( mleEst
+                              , DF (..)
+                              , MLEResult (..)
+                              ) where
 
 import Data.Default.Class
 
