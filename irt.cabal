@@ -57,6 +57,7 @@ library
                      , Math.IRT.Model.FourPLM
                      , Math.IRT.Model.Rasch
                      , Math.IRT.Model.Rasch.Logistic
+                     , Math.IRT.Model.Rasch.Internal
                      , Math.IRT.Model.Generic
                      , Math.IRT.MLE
                      , Math.IRT.MLE.Fenced
