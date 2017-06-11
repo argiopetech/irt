@@ -31,7 +31,7 @@ fisherInfoExpected theta params =
         test  = sum items
         sem   = sqrt (1 / test)
     in FisherInfo items test sem
-    where go x = let (cdf, ccdf, pdf, _) = pqDers x theta
+    where go x = let (cdf, ccdf, pdf) = pqDers x theta
                  in (pdf ^ 2) / (cdf * ccdf)
 
 
@@ -40,7 +40,7 @@ fisherInfoExpected theta params =
 -- We only implement the MLE route
 l' :: (Distribution d, ContDistr d, DensityDeriv d) => Bool -> d -> Double -> Double
 l' u x theta =
-    let (cdf, ccdf, pdf, _) = pqDers x theta
+    let (cdf, ccdf, pdf) = pqDers x theta
         denom = cdf * ccdf
         f x   = x * pdf / denom
     in case u of
@@ -51,7 +51,8 @@ l' u x theta =
 -- |The second derivative of `l` (same one as in `l'`)
 l'' :: (Distribution d, ContDistr d, DensityDeriv d) => Bool -> d -> Double -> Double
 l'' u x theta =
-    let (cdf, ccdf, pdf, pdf') = pqDers x theta
+    let (cdf, ccdf, pdf) = pqDers x theta
+        pdf'             = densityDeriv x theta
     in case u of
          True  -> (((-1) / cdf ^ 2) * (pdf ^ 2))
                   + (1 / cdf * pdf')
@@ -59,11 +60,9 @@ l'' u x theta =
                            + (1 / ccdf * pdf')
 
 
-pqDers :: (Distribution d, ContDistr d, DensityDeriv d) => d -> Double -> (Double, Double, Double, Double)
+pqDers :: (Distribution d, ContDistr d) => d -> Double -> (Double, Double, Double)
 pqDers x theta = let pComp = cumulative x theta
                      p'    = density x theta
-                     p''   = densityDeriv x theta
                  in ( pComp
                     , (1 - pComp)
-                    , p'
-                    , p'')
+                    , p')
