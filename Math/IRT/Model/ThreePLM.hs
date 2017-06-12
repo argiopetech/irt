@@ -1,10 +1,6 @@
-module Math.IRT.Model.ThreePLM ( ThreePLM (ThreePLM)
-                               , discrimination
-                               , difficulty
-                               , pseudoGuessing
-                               ) where
-
-import Control.Lens.TH
+module Math.IRT.Model.ThreePLM
+  ( ThreePLM (..)
+  ) where
 
 import Statistics.Distribution
 
@@ -14,12 +10,10 @@ import Math.IRT.Model.FourPLM ( FourPLM(..) )
 import Math.IRT.Model.Generic
 
 
-data ThreePLM = ThreePLM { _discrimination :: !Double
-                         , _difficulty     :: !Double
-                         , _pseudoGuessing :: !Double
+data ThreePLM = ThreePLM { discrimination :: !Double
+                         , difficulty     :: !Double
+                         , pseudoGuessing :: !Double
                          } deriving (Show)
-
-$(makeLenses ''ThreePLM)
 
 instance Distribution ThreePLM where
     cumulative = cumulative . toFourPLM

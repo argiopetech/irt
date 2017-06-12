@@ -1,9 +1,6 @@
-module Math.IRT.Model.TwoPLM ( TwoPLM (TwoPLM)
-                             , discrimination
-                             , difficulty
-                             ) where
-
-import Control.Lens.TH
+module Math.IRT.Model.TwoPLM
+  ( TwoPLM (..)
+  ) where
 
 import Statistics.Distribution
 
@@ -13,11 +10,9 @@ import Math.IRT.Model.FourPLM ( FourPLM(..) )
 import Math.IRT.Model.Generic
 
 
-data TwoPLM = TwoPLM { _discrimination :: !Double
-                     , _difficulty     :: !Double
+data TwoPLM = TwoPLM { discrimination :: !Double
+                     , difficulty     :: !Double
                      } deriving (Show)
-
-$(makeLenses ''TwoPLM)
 
 instance Distribution TwoPLM where
     cumulative = cumulative . toFourPLM

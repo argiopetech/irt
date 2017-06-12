@@ -1,9 +1,6 @@
 module Math.IRT.Model.OnePLM
-  ( OnePLM (OnePLM)
-  , difficulty
+  ( OnePLM (..)
   ) where
-
-import Control.Lens.TH
 
 import Statistics.Distribution
 
@@ -13,10 +10,8 @@ import Math.IRT.Model.FourPLM ( FourPLM(..) )
 import Math.IRT.Model.Generic
 
 
-data OnePLM = OnePLM { _difficulty :: !Double
+data OnePLM = OnePLM { difficulty :: !Double
                      } deriving (Show)
-
-$(makeLenses ''OnePLM)
 
 instance Distribution OnePLM where
     cumulative = cumulative . toFourPLM

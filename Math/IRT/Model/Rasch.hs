@@ -1,9 +1,6 @@
 module Math.IRT.Model.Rasch
-  ( RaschModel (RaschModel)
-  , difficulty
+  ( RaschModel (..)
   ) where
-
-import Control.Lens.TH
 
 import Statistics.Distribution
 
@@ -13,10 +10,8 @@ import Math.IRT.Model.FourPLM ( FourPLM(..) )
 import Math.IRT.Model.Generic
 
 
-data RaschModel = RaschModel { _difficulty :: !Double
+data RaschModel = RaschModel { difficulty :: !Double
                              } deriving (Show)
-
-$(makeLenses ''RaschModel)
 
 instance Distribution RaschModel where
     cumulative = cumulative . toFourPLM

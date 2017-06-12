@@ -1,27 +1,20 @@
 module Math.IRT.Fisher
     ( FisherInfo(..)
-    , items
-    , test
-    , sem
     , fisherInfoObserved
     , fisherInfoExpected
     , l'
     , l''
     ) where
 
-import Control.Lens.TH
-
 import Statistics.Distribution
 import Math.IRT.Internal.Distribution
 
 
-data FisherInfo = FisherInfo { _items :: [Double]
-                             , _test  :: !Double
-                             , _sem   :: !Double
+data FisherInfo = FisherInfo { items :: [Double]
+                             , test  :: !Double
+                             , sem   :: !Double
                              } deriving (Show)
 
-
-$(makeLenses ''FisherInfo)
 
 -- |The observed Fisher Information
 --  Applies a min/max prior to ensure a real-valued SEM

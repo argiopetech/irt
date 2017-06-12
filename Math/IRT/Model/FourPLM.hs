@@ -1,12 +1,7 @@
 {-# LANGUAGE GADTs #-}
-module Math.IRT.Model.FourPLM (FourPLM (FourPLM)
-                              , discrimination
-                              , difficulty
-                              , pseudoGuessing
-                              , asymptote
-                              ) where
-
-import Control.Lens.TH
+module Math.IRT.Model.FourPLM
+  ( FourPLM (..)
+  ) where
 
 import Numeric.AD (Mode, Scalar, auto)
 import Numeric.AD.Mode.Forward.Double
@@ -19,13 +14,11 @@ import Math.IRT.Internal.LogLikelihood
 import Math.IRT.Model.Generic
 
 
-data FourPLM = FourPLM { _discrimination :: !Double
-                       , _difficulty     :: !Double
-                       , _pseudoGuessing :: !Double
-                       , _asymptote      :: !Double
+data FourPLM = FourPLM { discrimination :: !Double
+                       , difficulty     :: !Double
+                       , pseudoGuessing :: !Double
+                       , asymptote      :: !Double
                        } deriving (Show)
-
-$(makeLenses ''FourPLM)
 
 instance Distribution FourPLM where
     cumulative = cumulative4PL
