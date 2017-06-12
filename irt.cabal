@@ -52,17 +52,17 @@ cabal-version:       >=1.10
 
 library
   -- Modules exported by the library.
-  exposed-modules:     Math.IRT.Model.TwoPLM
+  exposed-modules:     Math.IRT.Model.OnePLM
+                     , Math.IRT.Model.TwoPLM
                      , Math.IRT.Model.ThreePLM
                      , Math.IRT.Model.FourPLM
                      , Math.IRT.Model.Rasch
-                     , Math.IRT.Model.Rasch.Logistic
-                     , Math.IRT.Model.Rasch.Internal
                      , Math.IRT.Model.Generic
                      , Math.IRT.MLE
                      , Math.IRT.MLE.Fenced
-                     , Math.IRT.MLE.Internal
                      , Math.IRT.MLE.Truncated
+                     , Math.IRT.MLE.Internal.Generic
+                     , Math.IRT.MLE.Internal.MLEResult
                      , Math.IRT.Fisher
                      , Math.IRT.Internal.Distribution
                      , Math.IRT.Internal.LogLikelihood

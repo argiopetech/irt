@@ -1,18 +1,22 @@
-module Math.IRT.Model.Rasch ( RaschModel (RaschModel)
-                            , difficulty
-                            ) where
+module Math.IRT.Model.Rasch
+  ( RaschModel (RaschModel)
+  , difficulty
+  ) where
 
 import Control.Lens.TH
 
-import Numeric.AD
 import Statistics.Distribution
 
 import Math.IRT.Internal.Distribution
 import Math.IRT.Internal.LogLikelihood
 import Math.IRT.Model.FourPLM ( FourPLM(..) )
 import Math.IRT.Model.Generic
-import Math.IRT.Model.Rasch.Internal
 
+
+data RaschModel = RaschModel { _difficulty :: !Double
+                             } deriving (Show)
+
+$(makeLenses ''RaschModel)
 
 instance Distribution RaschModel where
     cumulative = cumulative . toFourPLM
@@ -25,8 +29,8 @@ instance DensityDeriv RaschModel where
     densityDeriv = densityDeriv . toFourPLM
 
 instance GenericModel RaschModel where
-    fromRaschLogistic   = RaschModel
-    fromRaschNormal     = RaschModel
+    fromRasch           = RaschModel
+    fromOnePLM          = RaschModel
     fromTwoPLM      _ b = RaschModel b
     fromThreePLM  _ b _ = RaschModel b
     fromFourPLM _ b _ _ = RaschModel b
@@ -34,4 +38,5 @@ instance GenericModel RaschModel where
 instance LogLikelihood RaschModel where
     logLikelihood b = logLikelihood b . toFourPLM
 
-toFourPLM (RaschModel sb) = FourPLM 1.7 sb 0.0 1.0
+toFourPLM :: RaschModel -> FourPLM
+toFourPLM (RaschModel sb) = FourPLM 1.0 sb 0.0 1.0

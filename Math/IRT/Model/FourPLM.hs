@@ -38,8 +38,8 @@ instance DensityDeriv FourPLM where
     densityDeriv x = (!! 2) . T.diffs (cumulative4PL x)
 
 instance GenericModel FourPLM where
-    fromRaschLogistic b = FourPLM 1.0 b 0.0 1.0
-    fromRaschNormal   b = FourPLM 1.7 b 0.0 1.0
+    fromRasch         b = FourPLM 1.0 b 0.0 1.0
+    fromOnePLM        b = FourPLM 1.7 b 0.0 1.0
     fromTwoPLM      a b = FourPLM   a b 0.0 1.0
     fromThreePLM  a b c = FourPLM   a b   c 1.0
     fromFourPLM         = FourPLM

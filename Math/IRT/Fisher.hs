@@ -1,68 +1,81 @@
 module Math.IRT.Fisher
     ( FisherInfo(..)
+    , items
+    , test
+    , sem
     , fisherInfoObserved
     , fisherInfoExpected
+    , l'
+    , l''
     ) where
+
+import Control.Lens.TH
 
 import Statistics.Distribution
 import Math.IRT.Internal.Distribution
 
 
-data FisherInfo = FisherInfo { items :: [Double]
-                             , test  :: !Double
-                             , sem   :: !Double
+data FisherInfo = FisherInfo { _items :: [Double]
+                             , _test  :: !Double
+                             , _sem   :: !Double
                              } deriving (Show)
+
+
+$(makeLenses ''FisherInfo)
 
 -- |The observed Fisher Information
 --  Applies a min/max prior to ensure a real-valued SEM
-fisherInfoObserved :: (Distribution d, ContDistr d, DensityDeriv d) => Double -> [Bool] -> [d] -> FisherInfo
+fisherInfoObserved :: (ContDistr d, DensityDeriv d) => Double -> [Bool] -> [d] -> FisherInfo
 fisherInfoObserved theta resps params =
-    let items = zipWith go resps params
-        test  = sum items
-        sem   = sqrt (1 / test)
-    in FisherInfo items test sem
+    let is = zipWith go resps params
+        t  = sum is
+        s  = sqrt (1 / t)
+    in FisherInfo is t s
     where go u x = negate $ l'' u x theta
 
 
 -- |The expected Fisher Information
---fisherInfoExpected :: (Distribution d, ContDistr d) => Double -> [d] -> FisherInfo
+fisherInfoExpected :: ContDistr d => Double -> [d] -> FisherInfo
 fisherInfoExpected theta params =
-    let items = map go params
-        test  = sum items
-        sem   = sqrt (1 / test)
-    in FisherInfo items test sem
+    let is = map go params
+        t  = sum is
+        s  = sqrt (1 / t)
+    in FisherInfo is t s
     where go x = let (cdf, ccdf, pdf) = pqDers x theta
-                 in (pdf ^ 2) / (cdf * ccdf)
+                 in (square pdf) / (cdf * ccdf)
 
 
 -- |The first derivative of `l`, whatever `l` is... Once again, the catIrt documentation disappoints.
 -- According to catIrt, "u is the response, and x are the parameters."
 -- We only implement the MLE route
-l' :: (Distribution d, ContDistr d, DensityDeriv d) => Bool -> d -> Double -> Double
+l' :: ContDistr d => Bool -> d -> Double -> Double
 l' u x theta =
     let (cdf, ccdf, pdf) = pqDers x theta
         denom = cdf * ccdf
-        f x   = x * pdf / denom
+        f k   = k * pdf / denom
     in case u of
          True  -> f ccdf
          False -> f cdf
 
 
 -- |The second derivative of `l` (same one as in `l'`)
-l'' :: (Distribution d, ContDistr d, DensityDeriv d) => Bool -> d -> Double -> Double
+l'' :: (ContDistr d, DensityDeriv d) => Bool -> d -> Double -> Double
 l'' u x theta =
     let (cdf, ccdf, pdf) = pqDers x theta
         pdf'             = densityDeriv x theta
     in case u of
-         True  -> (((-1) / cdf ^ 2) * (pdf ^ 2))
+         True  -> (((-1) / square cdf) * (square pdf))
                   + (1 / cdf * pdf')
-         False -> negate $ ((1 / ccdf ^ 2) * pdf ^ 2)
+         False -> negate $ ((1 / square ccdf) * square pdf)
                            + (1 / ccdf * pdf')
 
 
-pqDers :: (Distribution d, ContDistr d) => d -> Double -> (Double, Double, Double)
+pqDers :: ContDistr d => d -> Double -> (Double, Double, Double)
 pqDers x theta = let pComp = cumulative x theta
                      p'    = density x theta
                  in ( pComp
                     , (1 - pComp)
                     , p')
+
+square :: Double -> Double
+square = (^^ (2 :: Int))
