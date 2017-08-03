@@ -14,7 +14,7 @@ name:                irt
 version:             0.2.0.1
 
 -- A short (one-line) description of the package.
-synopsis:            A Haskell library providing Item Response Theory functions for use in computerized adaptive testing
+synopsis:            Item Response Theory functions for use in computerized adaptive testing
 
 -- A longer description of the package.
 -- description:         
@@ -36,7 +36,7 @@ author:              Elliot Robinson
 maintainer:          elliot.robinson@argiopetech.com
 
 -- A copyright notice.
--- copyright:           
+copyright:           2014-2017 Elliot Robinson
 
 category:            Math
 
